@@ -1,0 +1,25 @@
+groups:
+- name: application-health
+  rules:
+  - alert: ApplicationDown
+    expr: up{job="spring-boot-demo"} == 0
+    for: 1m
+    labels: {severity: critical, team: platform}
+    annotations:
+      summary: Demo application target is down
+      description: Prometheus cannot scrape the Spring Boot app for more than one minute.
+      runbook_url: docs/alert-response-runbook.md
+  - alert: HighRequestErrorRate
+    expr: (sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count[5m])), 0.001)) > 0.05
+    for: 2m
+    labels: {severity: warning, team: platform}
+    annotations:
+      summary: HTTP 5xx error ratio above 5 percent
+      description: Inspect application logs, recent deployments and dependencies.
+  - alert: HighJvmMemoryUsage
+    expr: (sum(jvm_memory_used_bytes{area="heap"}) / clamp_min(sum(jvm_memory_max_bytes{area="heap"}), 1)) > 0.85
+    for: 5m
+    labels: {severity: warning, team: platform}
+    annotations:
+      summary: JVM heap usage above 85 percent
+      description: Inspect heap trend, GC pauses, traffic and possible memory leaks.
