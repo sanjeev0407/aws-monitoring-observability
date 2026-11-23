@@ -1,4 +1,4 @@
-# Project 4 — Monitoring and Observability
+# Monitoring and Observability
 
 A runnable demo using **Spring Boot + Prometheus + Grafana**, with an optional **Amazon CloudWatch Agent** configuration. Designed for Windows/PowerShell and Docker Desktop.
 
